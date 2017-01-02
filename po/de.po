@@ -1,0 +1,15 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+
+#: ../src/gui/newslistplaceholder.vala:1
+msgid "No Feeds in here just yet"
+msgstr "Noch keine Feeds hier drin"
+
+#: ../src/gui/newslistplaceholder.vala:2
+msgid "Add some?"
+msgstr "Welche hinzufügen?"
+

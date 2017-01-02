@@ -1,0 +1,14 @@
+<schemalist>
+    <schema id="de.tum.in.stuebinm.feedreader" path="/de/tum/in/stuebinm/feedreader/">
+        <key name="feeds" type="as">
+            <default>[]</default>
+            <summary>The feed uris</summary>
+            <description>The uris of feeds that will be auto-loaded on application startup.</description>
+        </key>
+        <key name="reload-period" type="i">
+            <default>300</default>
+            <summary>Reloading period</summary>
+            <description>The time (in seconds) after which the feeds will be reloaded. Negative values for no auto-reloading.</description>
+        </key>
+    </schema>
+</schemalist>
