@@ -29,7 +29,6 @@ namespace helper {
     */
     public Time? parse_iso_date (string timestring) {
     
-    
         string input = timestring.replace (" ", "");
         input = input.replace ("\n", "");
         input = input.replace ("\t", "");
