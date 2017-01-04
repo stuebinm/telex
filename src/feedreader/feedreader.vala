@@ -20,12 +20,15 @@
 using FeedParser;
 using Gee;
 
+
+
+
+
  /** 
   * FeedLoader:
   * Will download and store feeds, as well as provide a HashMap with all the items currently in memory.
   * 
  */
- 
 class FeedReader : GLib.Object {
 
     public HashMap<string, FeedItem> items {get{return _items;}}
@@ -35,8 +38,18 @@ class FeedReader : GLib.Object {
     public HashMap<string, FeedChannel> channels {get{return _channels;}}
     private HashMap<string, FeedChannel> _channels = new HashMap<string, FeedChannel> ();
     
+     // contains the uris of all feeds
     public ArrayList<string> feeds {get{return this._feeds;}}
     private ArrayList<string> _feeds = new ArrayList<string> ();
+    
+    public enum Status {
+        EMPTY,
+        LOADING,
+        NONEMPTY
+    }
+    
+    public Status status {public get; private set; default = FeedReader.Status.EMPTY;}
+    
     
     Settings settings;
     
@@ -51,7 +64,7 @@ class FeedReader : GLib.Object {
         string[] feeds = settings.get_strv ("feeds");
     
         for (int i = 0; i<feeds.length; i++) {
-            this.feeds.add (feeds[i]);
+            this.add_feed (feeds[i]);
         }
     
         counter = 0;
@@ -64,6 +77,15 @@ class FeedReader : GLib.Object {
                 GLib.Thread.usleep (1000000);
                 FeedReaderMainLoop.invoke ( () => {this.increase (); return false;});
             }
+        });
+        
+        this.changed.connect ( () => {
+            if (this.feeds.size == 0) {
+                this.status = FeedReader.Status.EMPTY;
+            } else {
+                this.status = FeedReader.Status.NONEMPTY;
+            }
+            this.status_changed ();
         });
     }
     
@@ -78,6 +100,8 @@ class FeedReader : GLib.Object {
     */
     public void add_feed (string uri) {
         this.feeds.add (uri);
+        this.status = Status.LOADING;
+        this.status_changed ();
     }
     
     /**
@@ -142,7 +166,8 @@ class FeedReader : GLib.Object {
         
     }
     
-    private void parse_and_add_feed_async (string doc, string uri) {
+    private void parse_and_add_feed_async (string? doc, string uri) {
+        if (doc == null) return;
         FeedReaderMainLoop.invoke (new Loader(doc, this, uri).run);
     }
     
@@ -217,6 +242,14 @@ class FeedReader : GLib.Object {
     public signal void changed ();
     
     /**
+     * status_changed:
+     * Will be emitted whenever the status is changed.
+     * This is different to the #FeedReader.changed() signal, which won't change when
+     * a loading operation is started.
+    */
+    public signal void status_changed ();
+    
+    /**
      * feed_added:
      * Will be emitted when a new feed is added.
      * @feed: the newly-added feed
@@ -262,6 +295,8 @@ private class Loader : Object {
     public bool run () {
     
         Xml.Doc* xml = Xml.Parser.parse_memory (doc, doc.length);
+        
+        if (doc == null) return false;
         
         FeedChannel channel = FeedParser.parse (xml);
         channel.uri = this.uri;

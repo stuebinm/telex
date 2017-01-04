@@ -20,6 +20,8 @@
 using Gtk;
 
 
+
+
 /**
  * NewsListPlaceholder:
  * A placeholder widget for the #NewsList. Should either display a 'loading'-sign
@@ -38,11 +40,10 @@ class NewsListPlaceholder : Stack {
     Label loadingLabel;
     Spinner spinner;
     
-    GLib.Settings settings;
+    FeedReader backend;
     
-    public NewsListPlaceholder () {
-        
-        this.settings = new GLib.Settings ("de.tum.in.stuebinm.feedreader");
+    public NewsListPlaceholder (FeedReader backend) {
+        this.backend = backend;
         
         /** ↓ 'empty-feed*-thingies go here ↓ */
 
@@ -84,20 +85,17 @@ class NewsListPlaceholder : Stack {
         this.set_hexpand (true);
         this.set_vexpand (true);
         
-        this.add (this.loadingList);
         this.add (this.emptyList);
+        this.add (this.loadingList);
 
         this.show_all (); // No idea why this is necessary, but it seems to be …
         
-        this.set_visible_child (this.loadingList);
+        this.set_display (this.backend.status != FeedReader.Status.LOADING);
         
-        this.set_display (this.settings.get_strv ("feeds").length == 0);
-        
-        this.settings.changed.connect ( (key) => {
-            if (key == "feeds")
-                this.set_display (this.settings.get_strv ("feeds").length == 0);
+        this.backend.status_changed.connect ( () => {
+            this.set_display (this.backend.status != FeedReader.Status.LOADING);
         });
-    
+        
     }
     
     public void set_display (bool emptyList) {
