@@ -38,7 +38,7 @@ class NewsList : Stack {
     
     ScrolledWindow scrolled;
     ListBox layout;
-    FeedReader data;
+    FeedReader backend;
     NewsListPlaceholder placeholder;
     Spinner spinner;
     
@@ -47,9 +47,9 @@ class NewsList : Stack {
     public DisplayMode displaymode {private set; public get; default = DisplayMode.SHOW_ALL;}
     public string visible_feed_id {private set; public get; default = "";}
     
-    public NewsList (FeedReader data) {
+    public NewsList (FeedReader backend) {
     
-        this.data = data;
+        this.backend = backend;
         this.items = new HashMap <string, NewsListItem> ();
         
         this.displaymode = DisplayMode.SHOW_ALL;
@@ -64,7 +64,7 @@ class NewsList : Stack {
         this.layout.set_vexpand (true);
         this.layout.selection_mode = SelectionMode.BROWSE;
         
-        this.placeholder = new NewsListPlaceholder ();
+        this.placeholder = new NewsListPlaceholder (this.backend);
         this.layout.set_placeholder (this.placeholder);
         
         this.scrolled.add (layout);
@@ -74,8 +74,8 @@ class NewsList : Stack {
         this.scrolled.set_policy (PolicyType.EXTERNAL, PolicyType.AUTOMATIC);
         
         this.update (); // since normally there's already something in a feed-object
-        this.data.changed.connect (this.update);
-        this.data.feed_removed.connect (this.feed_removed);
+        this.backend.changed.connect (this.update);
+        this.backend.feed_removed.connect (this.feed_removed);
         
         this.layout.set_sort_func (this.sort_function);
         this.layout.set_filter_func (this.filter_function);
@@ -89,7 +89,7 @@ class NewsList : Stack {
      *
     */
     public void update () {
-        for (Gee.MapIterator<string, FeedItem> iter = this.data.items.map_iterator(); iter.next(); iter.has_next()) {
+        for (Gee.MapIterator<string, FeedItem> iter = this.backend.items.map_iterator(); iter.next(); iter.has_next()) {
             if (!this.items.has_key (iter.get_value().id)) {
                 NewsListItem new_news = new NewsListItem (iter.get_value ());
                 this.layout.add (new_news);
@@ -103,7 +103,7 @@ class NewsList : Stack {
     private void feed_removed (FeedChannel feed) {
         this.layout.foreach ( (widget) => {
             NewsListItem item = (NewsListItem) widget;
-            if (!this.data.items.has_key (item.data.id)) {
+            if (!this.backend.items.has_key (item.data.id)) {
                 widget.destroy ();
             }
         });
@@ -146,7 +146,7 @@ class NewsList : Stack {
             case DisplayMode.SHOW_UNREAD:
                 return _("Unread");
             default:
-                return this.data.get_feed_title (this.visible_feed_id);
+                return this.backend.get_feed_title (this.visible_feed_id);
         }
     }
     
