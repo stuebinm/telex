@@ -44,12 +44,22 @@ class FeedList : Frame {
         
         
         for (Gee.MapIterator<string, FeedChannel> iter = this.backend.channels.map_iterator(); iter.next(); iter.has_next()) {
-            this.layout.add (new FeedListItem (iter.get_value ()));
+            this.layout.add (new FeedListItem (this.backend, iter.get_value ()));
         }
         
         this.add (this.layout);
         this.set_size_request (400,0);
+        
+         // TODO: this might be done more efficiently than just searching like this …
+        this.backend.feed_removed.connect ( (feed) => {
+            this.layout.foreach ( (widget) => {
+                FeedListItem item = (FeedListItem) widget;
+                if (item.feed == feed)
+                    item.destroy ();
+            });
+        });
     }
+    
     
     
     public signal void selection_changed ();

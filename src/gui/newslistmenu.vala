@@ -18,6 +18,8 @@
 */
 
 using Gtk;
+using Gee;
+
 using FeedParser;
 
 class NewsListMenu : Gtk.MenuButton {
@@ -36,6 +38,8 @@ class NewsListMenu : Gtk.MenuButton {
     
     GLib.Menu displayMenu;
     
+    HashMap <string, int> menu_positions;
+    
     public NewsListMenu (NewsList list, FeedReader backend) {
         
         
@@ -51,12 +55,14 @@ class NewsListMenu : Gtk.MenuButton {
         this.relief = ReliefStyle.NONE;
         
         this.backend.feed_added.connect (this.add_feed);
+        this.backend.feed_removed.connect (this.remove_feed);
         this.menu = new PopoverMenu ();
         
         this.actions = new SimpleActionGroup ();
         
         var pop = new Popover (this);
         
+        this.menu_positions = new HashMap <string, int> ();
         
         GLib.Menu menu = new GLib.Menu ();
         this.displayMenu = new GLib.Menu ();
@@ -83,7 +89,13 @@ class NewsListMenu : Gtk.MenuButton {
     private void add_feed (FeedChannel feed) {
         GLib.MenuItem m = new GLib.MenuItem (feed.title, "display-feed");
         m.set_action_and_target_value ("display-feed", feed.id);
+        this.menu_positions [feed.id] = this.displayMenu.get_n_items ();
         this.displayMenu.append_item (m);
     }
+    
+    private void remove_feed (FeedChannel feed) {
+        //this.displayMenu.remove (this.menu_positions[feed.id]);
+    }
+    
 
 }

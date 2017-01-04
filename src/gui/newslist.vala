@@ -75,6 +75,7 @@ class NewsList : Stack {
         
         this.update (); // since normally there's already something in a feed-object
         this.data.changed.connect (this.update);
+        this.data.feed_removed.connect (this.feed_removed);
         
         this.layout.set_sort_func (this.sort_function);
         this.layout.set_filter_func (this.filter_function);
@@ -99,6 +100,14 @@ class NewsList : Stack {
         this.show_all ();
     }
     
+    private void feed_removed (FeedChannel feed) {
+        this.layout.foreach ( (widget) => {
+            NewsListItem item = (NewsListItem) widget;
+            if (!this.data.items.has_key (item.data.id)) {
+                widget.destroy ();
+            }
+        });
+    }
     
     private int sort_function (ListBoxRow a, ListBoxRow b) {
         NewsListItem a1 = (NewsListItem) a;
@@ -111,7 +120,13 @@ class NewsList : Stack {
         NewsListItem l1 = (NewsListItem) l;
         return this.displaymode == DisplayMode.SHOW_ALL ? true : this.visible_feed_id == l1.data.feed.id;
     }
-
+    
+    /**
+     * get_selected:
+     * Get the currently selected NewsListItem.
+     * 
+     * Returns: the selected NewsListItem.
+    */
     public NewsListItem get_selected () {
         return (NewsListItem) this.layout.get_selected_row();
     }

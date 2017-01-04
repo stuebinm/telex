@@ -114,7 +114,6 @@ class FeedReader : GLib.Object {
     
     
     public string get_feed_title (string id) {
-        stdout.printf ("Title: %s\n", this.channels[id].title);
         return this.channels[id].title;
     }
     
@@ -154,15 +153,87 @@ class FeedReader : GLib.Object {
         }
         this.counted ();
     }
-    
-    
-    
 
-     // is emitted whenever some loading was finished
+    /**
+     * remove_feed:
+     * Will remove the given feed from all lists using it in here.
+     * Also emits the #FeedReader.changed() and #FeedReader.removed_feed() signals.
+     * @channel: The feed to be removed. Should be one that's already in the feed, of course.
+    */
+    public void remove_feed (FeedChannel channel) {
+        
+         // remove every item that's in this feed.
+        MapIterator <string, FeedItem> iter = this.items.map_iterator ();
+        while (iter.has_next ()) {
+            iter.next ();
+            if (iter.valid) {
+                if (iter.get_value().feed.uri == channel.uri) {
+                    iter.unset ();
+                }
+            }
+        }
+        
+         // remove this feed from the parsed list.
+        this.channels.unset (channel.id);
+        
+         // remove this feed from the source list.
+        this.feeds.remove (channel.uri);
+        
+         // remove this feed from the settings list (to be re-loaded at next startup
+        string[] old = this.settings.get_strv ("feeds");
+        string[] gen = new string [0];
+        bool removed = false;
+        for (int i = 0; i<old.length; i++) {
+            if (old[i] == channel.uri) {
+                removed = true;
+            } else {
+                gen += old [i];
+            }
+        }
+        // TODO: uncomment this
+        //this.settings.set_strv ("feeds", gen);
+        
+         // emit signals
+        this.feed_removed (channel);
+        this.changed ();
+    }
+    
+    /**
+     * reload_feed:
+     * Reloads a feed.
+     * @feed: the feed to be reloaded.
+    */
+    public void reload_feed (FeedChannel feed) {
+        this.load_feed (feed.uri);
+    }
+    
+    /**
+     * changed:
+     * Will be emitted whenever something in the feeds changed.
+     * Usually, one of #FeedReader.feed_added() and #FeedReader.feed_removed() 
+     * will be throwned right before it, except when a simple reload was performed
+     * (i.e. just new items, no new feeds).
+    */
     public signal void changed ();
     
+    /**
+     * feed_added:
+     * Will be emitted when a new feed is added.
+     * @feed: the newly-added feed
+    */
     public signal void feed_added (FeedChannel feed);
     
+    /**
+     * feed_removed:
+     * Will be emitted when a feed was removevd.
+     * @feed: the feed that's been removed, to be deleted from every list displaying it.
+    */
+    public signal void feed_removed (FeedChannel feed);
+    
+    /**
+     * counted:
+     * Will be emitted whenever the seconds-counter (till next reload) has changed.
+    */
     public signal void counted ();
 }
 
@@ -189,8 +260,7 @@ private class Loader : Object {
      * Returns: false. That seems to be a requirement for #MainContext.invoke()
     */
     public bool run () {
-        stdout.printf ("Feed hinzufügen …\n");
-        
+    
         Xml.Doc* xml = Xml.Parser.parse_memory (doc, doc.length);
         
         FeedChannel channel = FeedParser.parse (xml);

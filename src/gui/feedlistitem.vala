@@ -22,9 +22,29 @@ using FeedParser;
 
 class FeedListItem : ListItem {
 
+    public FeedChannel feed {public get; private set;}
+    
+    public FeedReader backend {public get; private set;}
 
-    public FeedListItem (FeedChannel feed) {
-        base (feed.title, feed.uri, feed.icon);
+    public FeedListItem (FeedReader backend, FeedChannel feed) {
+        base (feed.title, feed.uri, feed.icon, "");
+        
+        this.feed = feed;
+        this.backend = backend;
+        
+        this.add_button (_("reload"), "reload");
+        this.add_button (_("remove"), "remove");
+        
+        this.button_pressed.connect ( (name) => {
+            switch (name) {
+                case "reload":
+                    this.backend.reload_feed (feed);
+                    break;
+                case "remove":
+                    this.backend.remove_feed (feed);
+                    break;
+            }
+        });
     }
 
 

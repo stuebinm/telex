@@ -33,7 +33,17 @@ class ListItem : ListBoxRow {
     
     WebImage image;
     
-    public ListItem (string title, string subtitle, string? image_uri, string? image_alt_uri = ""){
+    Grid button_area;
+    
+    /**
+     * ListItem:
+     * Constructs a new listitem.
+     * @title: a string setting the main title
+     * @subtitle: a 'subtitle' (it actually appears above the title, but in smaller font), use it for feed, uris, etc
+     * @image_uri: an uri pointing to an image that'll be displayed.
+     * @image_alt_uri: an alternative image that'll be displayed in case the first uri doesn't point to an image
+    */
+    public ListItem (string title, string subtitle, string? image_uri, string? image_alt_uri){
         
         
         this.layout = new Grid();
@@ -62,6 +72,12 @@ class ListItem : ListBoxRow {
          // TODO: This works fine for most (but not all!) feeds. If they don't use escape sequences, this WILL fail.
         this.title.set_markup ("<b>%s</b>".printf(Markup.escape_text(title)));
         
+        this.button_area = new Grid ();
+        this.button_area.orientation = Orientation.HORIZONTAL;
+        this.button_area.get_style_context().add_class (Gtk.STYLE_CLASS_LINKED);
+        
+        layout.attach (this.button_area, 2, 1);
+    
         layout.attach (this.feed, 1, 0, 2, 1);
         layout.attach (this.title, 1, 1, 1, 1);
         layout.attach (this.image, 0, 0, 1, 2);
@@ -71,5 +87,28 @@ class ListItem : ListBoxRow {
         
     }
     
+    /**
+     * add_button:
+     * Adds a button to this item.
+     * @label: a label to be displayed
+     * @name: an internal name that'll be used for signals (this is seperate in order to allow label translation)
+     *
+    */
+    public void add_button (string label, string name) {
+        Button b = new Button.with_label (label);
+        b.clicked.connect ( () => {
+            this.button_pressed (name);
+        });
+        this.button_area.add(b);
+        b.show ();
+    }
+    
+    /**
+     * button_pressed:
+     * Signals that a button (added with #Listitem.add_button()) has been pressed.
+     * @name: the name of the button.
+     *
+    */
+    public signal void button_pressed (string name);
 
 }
