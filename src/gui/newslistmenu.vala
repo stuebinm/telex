@@ -94,7 +94,14 @@ class NewsListMenu : Gtk.MenuButton {
     }
     
     private void remove_feed (FeedChannel feed) {
-        //this.displayMenu.remove (this.menu_positions[feed.id]);
+        this.displayMenu.remove (this.menu_positions[feed.id]);
+        this.menu_positions.foreach ( (entry) => {
+            if (entry.value > this.menu_positions[feed.id]) {
+                entry.value = entry.value -1;
+            }
+            return true;
+        });
+        this.menu_positions.unset (feed.id);
     }
     
 
