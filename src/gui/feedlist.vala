@@ -40,7 +40,7 @@ class FeedList : Frame {
         this.layout.selected_rows_changed.connect (() => {this.selection_changed();});
         this.layout.set_hexpand (true);
         this.layout.set_vexpand (true);
-        this.layout.selection_mode = SelectionMode.BROWSE;
+        this.layout.selection_mode = SelectionMode.NONE;
         
         
         for (Gee.MapIterator<string, FeedChannel> iter = this.backend.channels.map_iterator(); iter.next(); iter.has_next()) {
