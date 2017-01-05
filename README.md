@@ -7,6 +7,10 @@ Mostly, I wrote it because there doesn't seem to be a feedreader using Gtk+3 aro
 
 It's a bit basic for now, 'cause there's not really a usefull library for feedreading around, either (libgrss seems sort-of unfinished or unmaintained, and it's got functions with names like *quick_and_dirty_parse()*, which isn't all that encouraging), so I'm just writing my own.
 
+## Installing and Hacking:
+
+### Dependencies
+
 Should run fine on any linux distro. Dependencies (as cmake'll tell you):
 
 >gtk+-3.0
@@ -29,9 +33,7 @@ Though they should be included in every gtk-dev package around.
 
 Don't ask me about Windows, OS X or any such things, I've got no idea of them. Although it would be nice if, should you, for some reason, be compelled to try and compile them there and it works, you'd tell me.
 
-## Hacking
-
-For hacking, just do this:
+### Installing
 
 > $ git clone https://github.com/stuebinm/telex
 
@@ -45,16 +47,17 @@ For hacking, just do this:
 
 (might need to use sudo with that last one)
 
-This should give you a complete installed version of this program.
-Note that the *make install* is necessary; otherwise, gtk will crash because of 
+If you've changed the default install path, please be aware that it should be
+in the *$XDG_DATA_DIRS* variable, or else the gsettings scheme  won't be found.
+
+Also note that the *make install* is necessary; otherwise, gtk will crash because of 
 a missing gsettings scheme.
 
-If that's inconvinient, you can of course compile and install that
+If that's inconvinient for you, you can of course compile and install that
 manually, as well:
 
 > $ cp gsettings/feedreader.gschema.xml $SOME_INSTALL_PATH/glib-2.0/schemes/
 
 > $ glib-compile-schemas $SOME_INSTALL_PATH/glib-2.0/schemes
 
-Note that *$SOME_INSTALL_PATH* has to be in the *$XDG_DATA_DIRS* variable, or else gtk won't find it.
-
+(again, *$SOME_INSTALL_PATH* should be in *$CDG_DATA_DIRS*)
