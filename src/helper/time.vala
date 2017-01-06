@@ -27,7 +27,7 @@ namespace helper {
      *
      * Returns: a #Date containing the date, or else #null if an error occured.
     */
-    public Time? parse_iso_date (string timestring) {
+    public DateTime? parse_iso_date (string timestring) {
     
         string input = timestring.replace (" ", "");
         input = input.replace ("\n", "");
@@ -57,27 +57,26 @@ namespace helper {
         if (time.length != 3) return null;
 
         
-        Time ret = Time ();
         
-        ret.year = int.parse (date[0]);
-        ret.month = int.parse (date[1]);
-        ret.day = int.parse (date[2]);
+        int year = int.parse (date[0]);
+        int month = int.parse (date[1]);
+        int day = int.parse (date[2]);
         
-        ret.hour = int.parse (time[0]);
-        ret.minute = int.parse (time[1]);
-        ret.second = int.parse (time[2].split(".")[0]);
+        int hour = int.parse (time[0]);
+        int minute = int.parse (time[1]);
+        int second = int.parse (time[2].split(".")[0]);
     
     
         if (temp.length == 2) {
             string[] offset = temp[1].split (":");
-            ret.hour += int.parse (offset [0]) * timezonemult;
+            hour += int.parse (offset [0]) * timezonemult;
             if (offset.length == 2) {
-                ret.minute += int.parse (offset [1]) * timezonemult;
+                minute += int.parse (offset [1]) * timezonemult;
             }
         }
-
         
-        return ret;
+        
+        return new DateTime.utc (year, month, day, hour, minute, second);
     }
 
 

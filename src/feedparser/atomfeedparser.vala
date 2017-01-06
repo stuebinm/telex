@@ -121,7 +121,7 @@ namespace FeedParser {
                     ret.authors.add (parse_atom_person (iter));
                     break;
                 case "published":
-                    Time? t = helper.parse_iso_date (iter->get_content ());
+                    DateTime? t = helper.parse_iso_date (iter->get_content ());
                     if (t == null) stderr.printf (_("Error while parsing date!"));
                     else ret.published = t;
                     break;
@@ -135,7 +135,7 @@ namespace FeedParser {
                     ret.summary = iter->get_content ();
                     break;
                 case "updated":
-                    Time? t = helper.parse_iso_date (iter->get_content ());
+                    DateTime? t = helper.parse_iso_date (iter->get_content ());
                     if (t == null) stderr.printf (_("Error while parsing date!"));
                     else ret.updated = t;
                     break;

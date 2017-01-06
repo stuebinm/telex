@@ -39,6 +39,8 @@ class EntryDisplay : ScrolledWindow {
     // TODO: A LinkButton allowing you to open an email application if there's a mail attached to the author.
     //LinkButton email;
     
+    Label published;
+    
     HtmlView web;
     
     
@@ -55,6 +57,8 @@ class EntryDisplay : ScrolledWindow {
         this.title = new LinkButton.as_header ();
         this.author = new LinkButton ();
         
+        this.published = new Label (null);
+        
         this.web = new HtmlView ();
         this.web.set_hexpand (true);
         this.web.set_vexpand (true);
@@ -66,6 +70,7 @@ class EntryDisplay : ScrolledWindow {
         this.layout.add (this.feed);
         this.layout.add (this.title);
         this.layout.add (this.author);
+        this.layout.add (this.published);
         layout.add (webFrame);
         
         this.add (layout);
@@ -98,6 +103,10 @@ class EntryDisplay : ScrolledWindow {
         } else {
             this.author.set_link (null, null);
         }
+        
+        this.published.label = this.data.published.format("%c");
+        
+       // stdout.printf ("%d\n", this.data.published.year);
         
         this.web.display_string (this.data.content);
         

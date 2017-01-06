@@ -42,8 +42,8 @@ namespace FeedParser {
         
         public string image {get; set; default = null;}
 
-        public Time published {get; set;}
-        public Time updated {get; set;}
+        public DateTime published {get; set;}
+        public DateTime updated {get; set;}
     
         public ArrayList<string> links {get {return this._links;}}
         public ArrayList<string> categories {get {return this._categories;}}

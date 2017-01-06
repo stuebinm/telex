@@ -47,10 +47,8 @@ class NewsListItem : ListItem{ //ListBoxRow {
      *
     */
     public int relative_to (NewsListItem other) {
-        long a =  (long) other.data.published.mktime() - (long) this.data.published.mktime();
-        if (a==0) return 0; // this is necessary because int and longs aren't always the same; otherwise, overflows might occur (and wrong sorting).
-        if (a>0) return 1;
-        return -1;
+        if (other.data.published == null || this.data.published == null) return 0;
+        return other.data.published.compare (this.data.published);
     }
     
 
