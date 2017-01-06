@@ -38,7 +38,7 @@ class SettingsDialog : Window {
     Grid reload_layout;
     Label reload_time;
 
-    public SettingsDialog (FeedreaderWindow parent, FeedReader backend) {
+    public SettingsDialog (TelexWindow parent, FeedReader backend) {
         
         this.backend = backend;
         

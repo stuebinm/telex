@@ -17,18 +17,11 @@
 *
 */
 
-using Xml;
+namespace Telex {
 
-int main (string[] args) {
+    public const string APP_NAME = "${APP_NAME}";
+    public const string GSETTINGS_PATH = "${GSETTINGS_PATH}";
     
-    Parser.init ();
-     // this runs the app itself
-    var app = new TelexApp ();
-    int code = app.run (args);
+    
 
-    Parser.cleanup ();
-
-     // return Gtk's exit code
-    return code;
 }
-

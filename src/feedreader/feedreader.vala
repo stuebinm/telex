@@ -59,7 +59,7 @@ class FeedReader : GLib.Object {
     
     public FeedReader () {
         
-        settings = new Settings ("de.tum.in.stuebinm.feedreader");
+        settings = new Settings (Telex.GSETTINGS_PATH);
     
         string[] feeds = settings.get_strv ("feeds");
     

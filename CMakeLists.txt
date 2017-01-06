@@ -33,14 +33,23 @@
     # what to call that directory where we install data too
     set (PKGDATADIR "${DATADIR}/telex-reader")
 
+    set (APP_NAME "de.tum.in.stuebinm.telex")
+    set (GSETTINGS_PATH ${APP_NAME})
     set (EXEC_NAME "telex")
     set (RELEASE_NAME "A simple reader of feeds.")
     set (VERSION "0.1")
     set (VERSION_INFO "Just a few first tests …")
 
-     # let gtk find the datadir and stuff
-    configure_file (${CMAKE_SOURCE_DIR}/src/application.vala.md 
-                    ${CMAKE_BINARY_DIR}/src/application.vala
+
+     # generate a constants.vala file, to be used within the application (as a sort of replacement preprocessor macros)
+    configure_file (${CMAKE_SOURCE_DIR}/src/constants.vala.cmakegen 
+                    ${CMAKE_BINARY_DIR}/src/constants.vala
+                    NEWLINE_STYLE UNIX
+    )
+    
+     # generate a constants.vala file, to be used within the application (as a sort of replacement preprocessor macros)
+    configure_file (${CMAKE_SOURCE_DIR}/gsettings/telex.gschema.xml.cmakegen 
+                    ${CMAKE_BINARY_DIR}/gsettings/telex.gschema.xml
                     NEWLINE_STYLE UNIX
     )
     
@@ -99,7 +108,8 @@
     include(ValaPrecompile)
     vala_precompile(VALA_C ${EXEC_NAME}
         src/main.vala
-        ${CMAKE_BINARY_DIR}/src/application.vala
+        src/application.vala
+        ${CMAKE_BINARY_DIR}/src/constants.vala
         src/feedreader/feedreader.vala
         src/feedparser/atomfeedparser.vala
         src/feedparser/rssfeedparser.vala
@@ -152,7 +162,7 @@
     install (TARGETS ${EXEC_NAME} RUNTIME DESTINATION bin)
     
     # install the gsettings scheme
-    install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/gsettings/feedreader.gschema.xml DESTINATION ${DATADIR}/glib-2.0/schemas)
+    install (FILES ${CMAKE_BINARY_DIR}/gsettings/telex.gschema.xml DESTINATION ${DATADIR}/glib-2.0/schemas)
     
     # print out a little message
     install (CODE "MESSAGE (\"-- Compiling the gsettings scheme\")")

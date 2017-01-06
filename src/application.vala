@@ -23,10 +23,10 @@ MainContext FeedReaderMainLoop;
 
 
  // The feedreader app
-class FeedreaderApp : Gtk.Application {
+class TelexApp : Gtk.Application {
 
-    public FeedreaderApp () {
-        Object (application_id:  "de.tum.in.stuebinm.feedreader",
+    public TelexApp () {
+        Object (application_id:  Telex.APP_NAME,
                 flags: ApplicationFlags.FLAGS_NONE);
         
         
@@ -41,10 +41,9 @@ class FeedreaderApp : Gtk.Application {
     
     protected override void activate () {
         
-        this.set_resource_base_path ("${PKGDATADIR}/gtk");
         
          // the main window
-        FeedreaderWindow window = new FeedreaderWindow (this);
+        TelexWindow window = new TelexWindow (this);
         this.add_window (window);
 
         stdout.printf ("help window: %d\n", (int) (window.get_help_overlay () == null));

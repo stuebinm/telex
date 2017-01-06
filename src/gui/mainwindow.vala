@@ -20,10 +20,10 @@
 using Gtk;
 
  /**
-  * FeedreaderWindow:
+  * TelexWindow:
   * the actual application window (duh)
  */
-class FeedreaderWindow : ApplicationWindow {
+class TelexWindow : ApplicationWindow {
 
     MainWindowHeader header; // headerbar
 
@@ -37,7 +37,7 @@ class FeedreaderWindow : ApplicationWindow {
     
     AccelGroup keyboard;
     
-    public FeedreaderWindow(Gtk.Application app){
+    public TelexWindow(Gtk.Application app){
         Object (application: app); // Can't use base() here, Gtk doesn't support it (for whatever reason)
         
         this.add_actions ();

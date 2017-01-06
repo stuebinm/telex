@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
-  <gresource prefix="/de/tum/in/stuebinm/feedreader/">
+  <gresource prefix="/de/tum/in/stuebinm/telex/">
     <file>gtk/help-overlay.ui</file>
     <file>gtk/menus.ui</file>
   </gresource>

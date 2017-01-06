@@ -1,7 +1,7 @@
 <schemalist>
-    <schema id="de.tum.in.stuebinm.feedreader" path="/de/tum/in/stuebinm/feedreader/">
+    <schema id="${GSETTINGS_PATH}" path="/de/tum/in/stuebinm/telex/">
         <key name="feeds" type="as">
-            <default>[]</default>
+            <default>['http://planet.vala-project.org/atom.xml']</default>
             <summary>The feed uris</summary>
             <description>The uris of feeds that will be auto-loaded on application startup.</description>
         </key>
