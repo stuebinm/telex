@@ -60,4 +60,4 @@ manually, as well:
 
 > $ glib-compile-schemas $SOME_INSTALL_PATH/glib-2.0/schemes
 
-(again, *$SOME_INSTALL_PATH* should be in *$CDG_DATA_DIRS*)
+(again, *$SOME_INSTALL_PATH* should be in *$XDG_DATA_DIRS*)
